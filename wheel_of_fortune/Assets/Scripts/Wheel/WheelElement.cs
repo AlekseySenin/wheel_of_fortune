@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class WheelElement : MonoBehaviour
+public class WheelElement : MonoBehaviour, iSetable<int>
 {
     [SerializeField] private TextMeshProUGUI ValueText;
     [SerializeField] private UnityEngine.UI.Image image;
     [SerializeField] private List<Color> colors;
 
-    public  void Setup(int val)
+    public void SetInstance(int val)
     {
         if (colors.Count > 0)
         {

@@ -3,20 +3,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class SetableObject<T> : MonoBehaviour
+
+public interface iSetable<T>
 {
-    protected static Action<T> OnSetup;
-    public static void Setup(T val)
-    {
-        OnSetup?.Invoke(val);
-    }
-
-    protected abstract void SetInstance(T val);
-   
-
-    protected virtual void Start()
-    {
-        OnSetup += SetInstance;
-    }
-
+    void SetInstance(T val);
 }
+

@@ -4,55 +4,60 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class WheelController : MonoBehaviour
+public class WheelController : MonoBehaviour, iSetable<RandomIntListGeneratorSettings>
 {
     [SerializeField] private RandomIntListGeneratorSettings generatorSettings;
     [SerializeField] private List<int> segmentValues;
-    [SerializeField] private WheelObject wheelWindow;
+    [SerializeField] private WheelObject wheelObject;
 
+    public void SetInstance(RandomIntListGeneratorSettings val)
+    {
+        generatorSettings = val;
+    }
 
     public static int SpinResoultIndex { get; private set; }
 
-    public static List<int> wheelValues { get; private set; } = new List<int>();
+    public List<int> wheelValues { get; private set; } = new List<int>();
 
-    private static Action OnShowWheel;
-    private static Action OnStartSpin;
-    public static Action<int> OnStinFinished;
-    public static Action<int> OnRewardReceived;
+    public  Action  <List<int>> OnWheelSet;
+    public  Action OnStartSpin;
+    public  Action<int> OnStinFinished;
+    public bool canSpin { get; private set; } = true;
 
 
     private void Awake()
     {
-        OnShowWheel += Setup;
         OnStartSpin += Spin;
+        OnStinFinished += wheelObject.SpinStarted;
+        ShowWheel();
     }
 
 
-
-    public static void ShowWheel()
+    public  void ShowWheel()
     {
-        OnShowWheel?.Invoke();
+        Setup();
     }
 
     private void Setup()
     {
         wheelValues = RandomIntListGenerator.Generate(generatorSettings);
-    }
-
-    public static void StartSpin()
-    {
-        OnStartSpin?.Invoke();
+        wheelObject.SetInstance(this);
     }
 
     private void Spin()
     {
-        SpinResoultIndex = Random.Range(0, wheelValues.Count);
-        OnStinFinished?.Invoke(SpinResoultIndex);
+        if (canSpin)
+        {
+            canSpin = false;
+            SpinResoultIndex = Random.Range(0, wheelValues.Count);
+            OnStinFinished?.Invoke(SpinResoultIndex);
+        }
     }
 
-    public static int ReceiveWin()
+    public void ReceiveWin()
     {
-        OnRewardReceived?.Invoke(wheelValues[SpinResoultIndex]);
-        return (wheelValues[SpinResoultIndex]);
+        canSpin = true;
+        GameController.Score += wheelValues[SpinResoultIndex]; 
+        SoundManager.PlaySound(SoundType.coinWin);
     }
 }

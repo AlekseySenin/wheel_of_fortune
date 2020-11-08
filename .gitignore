@@ -9,6 +9,7 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Mm]emoryCaptures/
+/wheel_of_fortune/Library/
 
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
@@ -34,6 +35,7 @@ ExportedObj/
 *.suo
 *.tmp
 *.user
+*.meta
 *.userprefs
 *.pidb
 *.booproj
